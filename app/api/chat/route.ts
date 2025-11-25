@@ -1,6 +1,9 @@
 import { generateQueryOrRespond } from "@/libs/chat";
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
@@ -12,7 +15,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Runtime call to LangChain / OpenAI
     const result = await generateQueryOrRespond({ messages: body.messages });
 
     const ai = result.messages?.[0];
