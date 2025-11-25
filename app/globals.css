@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: "Mona Sans", sans-serif;
+  }
+}
