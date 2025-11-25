@@ -1,14 +1,25 @@
-import { docSplits } from "./loader";
 import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 
+let retrieverInstance: any = null;
 
-const vectorStore = await MemoryVectorStore.fromDocuments(
-  docSplits,
-   new GoogleGenerativeAIEmbeddings({
-    apiKey: process.env.GOOGLE_API_KEY,
-    modelName: "embedding-001",
-  })
-);
+export async function getRetriever() {
+  // Return cached instance if already created
+  if (retrieverInstance) {
+    return retrieverInstance;
+  }
 
-export const retriever = vectorStore.asRetriever();
+  // Lazy load documents only when needed
+  const { docSplits } = await import("./loader");
+
+  const vectorStore = await MemoryVectorStore.fromDocuments(
+    docSplits,
+    new GoogleGenerativeAIEmbeddings({
+      apiKey: process.env.GOOGLE_API_KEY,
+      modelName: "embedding-001",
+    })
+  );
+
+  retrieverInstance = vectorStore.asRetriever();
+  return retrieverInstance;
+}
