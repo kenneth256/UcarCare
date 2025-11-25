@@ -3,16 +3,27 @@
 import { useState, useEffect, useRef } from "react";
 import { Send, Bot, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
 };
 
-const chatNotVisibleVariants = {
+const chatNotVisibleVariants: Variants = {
   hidden: { opacity: 0, scale: 0.1, x: 50 },
-  visible: { opacity: 1, scale: 1, x: 0 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    x: 0,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+      repeat: Infinity,
+      repeatType: "mirror",
+      repeatDelay: 2,
+    },
+  },
 };
 
 export default function ChatInterface() {
@@ -23,6 +34,7 @@ export default function ChatInterface() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Scroll to bottom when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -36,23 +48,20 @@ export default function ChatInterface() {
     setInput("");
     setIsLoading(true);
 
+    const latestMessages = [...messages, userMessage]; // safe snapshot
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [...messages, userMessage].map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
-        }),
+        body: JSON.stringify({ messages: latestMessages }),
       });
 
       const data = await response.json();
 
       const assistantMessage: Message = {
         role: "assistant",
-        content: data.messages[0]?.content || "No response",
+        content: data.messages?.[0]?.content || "No response",
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -78,13 +87,6 @@ export default function ChatInterface() {
           variants={chatNotVisibleVariants}
           initial="hidden"
           animate="visible"
-          transition={{
-            duration: 0.4,
-            ease: "easeOut",
-            repeat: Infinity,
-            repeatType: "mirror",
-            repeatDelay: 2,
-          }}
           className="fixed bottom-7 right-5 z-50 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg cursor-pointer flex items-center gap-2 hover:bg-blue-700 transition-colors"
           onClick={() => setChatVisible(true)}
         >
@@ -100,9 +102,7 @@ export default function ChatInterface() {
         <div className="fixed bottom-7 right-5 w-[360px] max-h-[500px] z-50 flex flex-col shadow-lg rounded-3xl overflow-hidden bg-white transition-all duration-300">
           {/* Header */}
           <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
-            <div>
-              <p className="text-sm opacity-90">Ask me anything about cars!</p>
-            </div>
+            <p className="text-sm opacity-90">Ask me anything about cars!</p>
             <button
               onClick={() => setChatVisible(false)}
               className="text-white text-xl font-bold"
@@ -123,9 +123,7 @@ export default function ChatInterface() {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex gap-2 ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex gap-2 ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {message.role === "assistant" && (
                   <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
