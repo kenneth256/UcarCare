@@ -1,5 +1,7 @@
 import { color } from "framer-motion";
 
+
+
 export const rightTyres = 'https://corp-assets.pirelli.com/corporate/6515_consumer-tyres-car.png';
 export const leftTyres = 'https://www.pngall.com/wp-content/uploads/5/Car-PNG-High-Quality-Image.png';
 export const featuredcars = [
@@ -40,3 +42,6 @@ export const featuredcars = [
         price: '$72,000'
     },
 ]
+
+
+

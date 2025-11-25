@@ -43,7 +43,7 @@ const subheadingVariants = {
 };
 
 const carItemVariants = {
-  hidden: (index) => ({
+  hidden: (index: any) => ({
     opacity: 0,
     x: index % 2 === 0 ? 100 : -100,
     scale: 0.95,
@@ -61,7 +61,7 @@ const Feature = () => {
   const isInView = useInView(carRef, { once: true, amount: 0.2 });
 
   return (
-    <div className="w-full min-h-screen py-20 px-4">
+    <div className="w-full min-h-screen py-20 px-4 mb-10">
       {/* Heading Section */}
       <div className="flex flex-col justify-center text-center mb-16">
         <motion.p

@@ -4,7 +4,7 @@ import { Settings, Award, Shield, Zap } from "lucide-react";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 50 },
-  visible: (i) => ({
+  visible: (i: any) => ({
     opacity: 1,
     y: 0,
     transition: {
@@ -50,8 +50,15 @@ const CarBenefits = () => {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-16">
-      {/* Benefits Cards */}
+    <div className="w-full max-w-7xl mx-auto px-4">
+      <div className="text-center mb-12">
+        <p className="text-2xl font-medium text-black/60">
+          Find Your Dream Car
+        </p>
+        <h2 className="text-5xl font-bold mt-4 mb-4 font-mona">
+          PICK YOUR CAR
+        </h2>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
         {benefits.map((benefit, index) => (
           <motion.div
