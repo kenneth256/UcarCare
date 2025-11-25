@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,6 +16,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log('📤 Processing chat request...');
     const result = await generateQueryOrRespond({ messages: body.messages });
 
     const ai = result.messages?.[0];
@@ -28,8 +30,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       messages: [{ role: "assistant", content: text }],
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Chat error:", error);
-    return NextResponse.json({ error: "Failed to process chat" }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "Failed to process chat" },
+      { status: 500 }
+    );
   }
 }
