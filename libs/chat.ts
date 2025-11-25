@@ -1,12 +1,13 @@
 "use server";
 
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { getTools } from "./createRetrieverTool";
 
 export async function generateQueryOrRespond(state: { messages: any[] }) {
   const { messages } = state;
 
  
-  const { tools } = await import("@/libs/createRetrieverTool");
+    const tools = await getTools();
 
   const model = new ChatGoogleGenerativeAI({
     model: "gemini-2.5-flash",

@@ -9,7 +9,7 @@ export async function getRetriever() {
     return retrieverInstance;
   }
 
-  // Lazy load documents only when needed
+ 
   const { docSplits } = await import("./loader");
 
   const vectorStore = await MemoryVectorStore.fromDocuments(
